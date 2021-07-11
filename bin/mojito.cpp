@@ -1,20 +1,3 @@
-/**
- * @file mojito.cpp
- *
- * @version 01.01 202155
- *
- * @brief mojito
- *
- * @ingroup mojito
- * (Note: this needs exactly one @defgroup somewhere)
- *
- * @author Castellani Davide
- *
- * Contact: contacts@castellanidavide.it
- *
- */
-
-// Includes
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -28,26 +11,26 @@ struct ragazzo
 {
     pos da;
     pos a;
+    bool visto = false;
 };
 
 // Variabiles
-int N;
+int N, sol;
 pos grid, dog;
 vector <ragazzo> ragazzi;
-vector <int> visti;
 
 int calc_dist(pos pos1, pos pos2)
 {
     return abs(pos1.x - pos2.x) + abs(pos1.y - pos2.y);
 }
 
-void solve()
+void solve(pos by)
 {
     int ragazzo_vicino = -1;
-    int distanza = INT_MIN;
+    int distanza = INT_MAX;
     for (size_t i = 0; i < N; ++i)
     {
-        int d = calc_dist(dog, ragazzi[i].da);
+        int d = calc_dist(by, ragazzi[i].da);
         if (d < distanza)
         {
             distanza = d;
@@ -55,11 +38,11 @@ void solve()
         }
     }
 
-    if(std::find(visti.begin(), visti.end(), ragazzo_vicino) == visti.end())   // If not exists yet
+    if(!ragazzi[ragazzo_vicino].visto)
     {
-        visti.push_back(ragazzo_vicino);
-        dog = ragazzi[ragazzo_vicino].a;
-        solve();
+        ragazzi[ragazzo_vicino].visto = true;
+        sol++;
+        solve(ragazzi[ragazzo_vicino].a);
     }
 }
 
@@ -71,9 +54,10 @@ int main()
     // freopen("output.txt", "w", stdout);
 
     // Input
-    cin >> grid.x, grid.y;
-    cin >> dog.x, dog.y;
+    cin >> grid.x >> grid.y;
+    cin >> dog.x >> dog.y;
     cin >> N;
+    sol = 0;
 
     for (size_t i = 0; i < N; ++i)
     {
@@ -82,10 +66,10 @@ int main()
         ragazzi.push_back(temp);
     }
 
-    solve();
+    solve(dog);
 
     // Output
-    cout << visti.size() << endl;
+    cout << sol << endl;
 
     // End
     return 0;
